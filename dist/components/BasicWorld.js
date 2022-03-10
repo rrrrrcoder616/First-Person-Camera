@@ -1,19 +1,12 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136';
 import {OrbitControls} from 'https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js';
 
-// '../assets/skybox/posx.jpg',
-//     '../assets/skybox/negx.jpg',
-//     '../assets/skybox/posy.jpg',
-//     '../assets/skybox/negy.jpg',
-//     '../assets/skybox/posz.jpg',
-//     '../assets/skybox/negz.jpg',
-
-
 export default class BasicWorld {
     constructor() {
+        this.initialize_()
     }
 
-    initialize() {
+    initialize_() {
 
         this.threejs_ = new THREE.WebGLRenderer({
             antialias: true,

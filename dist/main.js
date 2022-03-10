@@ -5,5 +5,4 @@ let APP_ = null
 
 window.addEventListener('DOMContentLoaded', async () => {
     APP_ = new BasicWorld()
-    APP_.initialize()
 })
