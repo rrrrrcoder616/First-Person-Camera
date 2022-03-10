@@ -8,48 +8,10 @@ export default class BasicWorld {
 
     initialize_() {
 
-        this.threejs_ = new THREE.WebGLRenderer({
-            antialias: true,
-        });
-        this.threejs_.shadowMap.enabled = true;
-        this.threejs_.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.threejs_.setPixelRatio(window.devicePixelRatio);
-        this.threejs_.setSize(window.innerWidth, window.innerHeight);
+        this.initalizeRenderer_()
+        this.initializeLights_()
 
-        document.body.appendChild(this.threejs_.domElement);
 
-        window.addEventListener('resize', () => {
-            this.onWindowResize_();
-        }, false);
-
-        const fov = 60;
-        const aspect = 1920 / 1080;
-        const near = 1.0;
-        const far = 1000.0;
-        this.camera_ = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera_.position.set(75, 20, 0);
-
-        this.scene_ = new THREE.Scene();
-
-        let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-        light.position.set(20, 100, 10);
-        light.target.position.set(0, 0, 0);
-        light.castShadow = true;
-        light.shadow.bias = -0.001;
-        light.shadow.mapSize.width = 2048;
-        light.shadow.mapSize.height = 2048;
-        light.shadow.camera.near = 0.1;
-        light.shadow.camera.far = 500.0;
-        light.shadow.camera.near = 0.5;
-        light.shadow.camera.far = 500.0;
-        light.shadow.camera.left = 100;
-        light.shadow.camera.right = -100;
-        light.shadow.camera.top = 100;
-        light.shadow.camera.bottom = -100;
-        this.scene_.add(light);
-
-        light = new THREE.AmbientLight(0x101010);
-        this.scene_.add(light);
 
         const controls = new OrbitControls(
             this.camera_, this.threejs_.domElement);
@@ -78,6 +40,64 @@ export default class BasicWorld {
         this.count_ = 0;
         this.previousRAF_ = null;
         this.raf_();
+    }
+
+    initalizeRenderer_() {
+        this.threejs_ = new THREE.WebGLRenderer({
+            antialias: false,
+        })
+        this.threejs_.shadowMap.enabled = true
+        this.threejs_.shadowMap.type = THREE.PCFSoftShadowMap
+        this.threejs_.setPixelRatio(window.devicePixelRatio)
+        this.threejs_.setSize(window.innerWidth, window.innerHeight)
+        this.threejs_.physicallyCorrectLights = true
+        this.threejs_.outputEncoding = THREE.sRGBEncoding
+
+        document.body.appendChild(this.threejs_.domElement)
+
+        window.addEventListener('resize', () => {
+            this.onWindowResize_();
+        }, false)
+
+        const fov = 60
+        const aspect = 1920 / 1080
+        const near = 1.0
+        const far = 1000.0
+        this.camera_ = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        this.camera_.position.set(0, 2, 0)
+
+        this.scene_ = new THREE.Scene()
+
+        this.uiCamera_ = new THREE.OrthographicCamera(
+            -1, 0, 1 * aspect, -1 * aspect, 1, 1000)
+        this.uiScene_ = new THREE.Scene()
+    }
+
+    initializeLights_() {
+        const distance = 50.0
+        const angle = Math.PI / 4.0
+        const penumbra = 0.5
+        const decay = 1.0
+
+        let light = new THREE.SpotLight(0xFFFFFF, 100.0, distance, angle, penumbra, decay);
+        light.castShadow = true
+        light.shadow.bias = -0.00001
+        light.shadow.mapSize.width = 4096
+        light.shadow.mapSize.height = 4096
+        light.shadow.camera.near = 1
+        light.shadow.camera.far = 100.0
+
+        light.position.set(25, 25, 0)
+        light.lookAt(0, 0, 0)
+        this.scene_.add(light);
+
+        const upColour = 0xFFFF80
+        const downColour = 0x808080
+        light = new THREE.HemisphereLight(upColour, downColour, 0.5)
+        light.color.setHSL(0.6, 1, 0.6)
+        light.groundColor.setHSL(0.095, 1, 0.75)
+        light.position.set(0, 4, 0)
+        this.scene_.add(light)
     }
 
     onWindowResize_() {
