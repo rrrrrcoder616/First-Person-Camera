@@ -95,7 +95,7 @@ export class InputController {
         return this.previous_ !== null
     }
 
-    update() {
+    update(_) {
         if (this.previous_ !== null) {
             this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX
             this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY

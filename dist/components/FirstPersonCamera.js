@@ -30,6 +30,9 @@ export class FirstPersonCamera {
 
     update(timeElapsedS) {
         this.updateRotation_(timeElapsedS)
+        this.updateCamera_(timeElapsedS)
+
+        this.input_.update(timeElapsedS)
     }
 
     updateRotation_(timeElapsedS) {
@@ -49,6 +52,33 @@ export class FirstPersonCamera {
         q.multiply(qz)
 
         this.rotation_.copy(q)
+    }
+
+    updateCamera_(_) {
+        this.camera_.quaternion.copy(this.rotation_)
+        this.camera_.position.copy(this.translation_)
+        this.camera_.position.y += Math.sin(this.headBobTimer_ * 10) * 1.5
+
+        const forward = new THREE.Vector3(0, 0, -1)
+        forward.applyQuaternion(this.rotation_)
+
+        const dir = forward.clone()
+
+        forward.multiplyScalar(1)
+        forward.add(this.translation_)
+
+        let closest = forward;
+        const result = new THREE.Vector3();
+        const ray = new THREE.Ray(this.translation_, dir)
+        for (let i = 0; i < this.objects_.length; ++i) {
+            if (ray.intersectBox(this.objects_[i], result)) {
+                if (result.distanceTo(ray.origin) < closest.distanceTo(ray.origin)) {
+                    closest = result.clone()
+                }
+            }
+        }
+
+        this.camera_.lookAt(closest);
     }
 
 }

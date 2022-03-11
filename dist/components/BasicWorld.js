@@ -60,7 +60,7 @@ export default class BasicWorld {
         this.scene_ = new THREE.Scene()
 
         this.uiCamera_ = new THREE.OrthographicCamera(
-            -1, 0, 1 * aspect, -1 * aspect, 1, 1000)
+            -1, 1, 1 * aspect, -1 * aspect, 1, 1000)
         this.uiScene_ = new THREE.Scene()
     }
 
