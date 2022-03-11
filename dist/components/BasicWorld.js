@@ -1,6 +1,8 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136';
 import {OrbitControls} from 'https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js';
 
+import {FirstPersonCamera} from './FirstPersonCamera.js'
+
 export default class BasicWorld {
     constructor() {
         this.initialize_()
@@ -15,10 +17,10 @@ export default class BasicWorld {
 
 
 
-        const controls = new OrbitControls(
-            this.camera_, this.threejs_.domElement);
-        controls.target.set(0, 20, 0);
-        controls.update();
+        // const controls = new OrbitControls(
+        //     this.camera_, this.threejs_.domElement);
+        // controls.target.set(0, 20, 0);
+        // controls.update();
 
         // this.countdown_ = 1.0;
         // this.count_ = 0;
@@ -28,7 +30,7 @@ export default class BasicWorld {
     }
 
     initializeCamera_() {
-        // this.fpsCamera_ = new First
+        this.fpsCamera_ = new FirstPersonCamera(this.camera_, this.objects_)
     }
 
     initalizeRenderer_() {
@@ -263,12 +265,13 @@ export default class BasicWorld {
 
     step_(timeElapsed) {
         const timeElapsedS = timeElapsed * 0.001;
+        this.fpsCamera_.update(timeElapsedS)
 
-        this.countdown_ -= timeElapsedS;
-        if (this.countdown_ < 0 && this.count_ < 10) {
-            this.countdown_ = 0.25;
-            this.count_ += 1;
-        }
+        // this.countdown_ -= timeElapsedS;
+        // if (this.countdown_ < 0 && this.count_ < 10) {
+        //     this.countdown_ = 0.25;
+        //     this.count_ += 1;
+        // }
     }
 
 }

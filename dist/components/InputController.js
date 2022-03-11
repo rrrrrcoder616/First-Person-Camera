@@ -1,7 +1,10 @@
-export default class InputController {
+import * as THREE from 'https://cdn.skypack.dev/three@0.136';
+
+export class InputController {
     constructor(target) {
         this.target_ = target || document
         this.initialize_()
+        console.log("ddd2")
     }
 
     initialize_() {
@@ -29,7 +32,7 @@ export default class InputController {
             this.onKeyDown_(e)
         }, false)
         this.target_.addEventListener('keyup', (e) => {
-            this.onKeyUp(e)
+            this.onKeyUp_(e)
         }, false)
     }
 
