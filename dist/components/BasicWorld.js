@@ -11,6 +11,7 @@ export default class BasicWorld {
         this.initalizeRenderer_()
         this.initializeLights_()
         this.initializeScene_()
+        this.initializeCamera_()
 
 
 
@@ -19,10 +20,15 @@ export default class BasicWorld {
         controls.target.set(0, 20, 0);
         controls.update();
 
-        this.countdown_ = 1.0;
-        this.count_ = 0;
+        // this.countdown_ = 1.0;
+        // this.count_ = 0;
         this.previousRAF_ = null;
         this.raf_();
+        this.onWindowResize_()
+    }
+
+    initializeCamera_() {
+        // this.fpsCamera_ = new First
     }
 
     initalizeRenderer_() {
@@ -123,6 +129,69 @@ export default class BasicWorld {
         box.receiveShadow = true
         this.scene_.add(box)
 
+        const concreteMaterial = this.loadMaterial_('concrete3-', 4)
+
+        const wall1 = new THREE.Mesh(
+            new THREE.BoxGeometry(100, 100, 4),
+            concreteMaterial)
+        wall1.position.set(0, -40, -50)
+        wall1.castShadow = true
+        wall1.receiveShadow = true
+        this.scene_.add(wall1)
+
+        const wall2 = new THREE.Mesh(
+            new THREE.BoxGeometry(100, 100, 4),
+            concreteMaterial)
+        wall2.position.set(0, -40, 50)
+        wall2.castShadow = true
+        wall2.receiveShadow = true
+        this.scene_.add(wall2)
+
+        const wall3 = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 100, 100),
+            concreteMaterial)
+        wall3.position.set(50, -40, 0)
+        wall3.castShadow = true
+        wall3.receiveShadow = true
+        this.scene_.add(wall3)
+
+        const wall4 = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 100, 100),
+            concreteMaterial)
+        wall4.position.set(-50, -40, 0)
+        wall4.castShadow = true
+        wall4.receiveShadow = true
+        this.scene_.add(wall4)
+
+        const meshes = [
+            plane, box, wall1, wall2, wall3, wall4
+        ]
+
+        this.objects_ = []
+        for (let i = 0; i < meshes.length; ++i) {
+            const b = new THREE.Box3()
+            b.setFromObject(meshes[i])
+            this.objects_.push(b)
+        }
+
+        // CROSSHAIR
+        // const crosshair = mapLoader.load('../assets/crosshair.png')
+        // crosshair.anisotropy = maxAnisotropy
+        //
+        // this.sprite_ = new THREE.Sprite(
+        //     new THREE.SpriteMaterial({
+        //         map: crosshair,
+        //         color: 0xffffff,
+        //         fog: false,
+        //         depthTest: false,
+        //         depthWrite: false
+        //     })
+        // )
+        // this.sprite_.scale.set(0.16, 0.15 * this.camera_.aspect, 1)
+        // this.sprite_.position.set(0, 0, -10)
+        //
+        // this.uiScene_.add(this.sprite_)
+
     }
 
     loadMaterial_(name, tiling) {
@@ -167,7 +236,12 @@ export default class BasicWorld {
     onWindowResize_() {
         this.camera_.aspect = window.innerWidth / window.innerHeight;
         this.camera_.updateProjectionMatrix();
-        this.threejs_.setSize(window.innerWidth, window.innerHeight);
+
+        this.uiCamera_.left = -this.camera_.aspect
+        this.uiCamera_.right = this.camera_.aspect
+        this.uiCamera_.updateProjectionMatrix()
+
+        this.threejs_.setSize(window.innerWidth, window.innerHeight)
     }
 
     raf_() {
@@ -177,9 +251,12 @@ export default class BasicWorld {
             }
 
             this.step_(t - this.previousRAF_);
+            this.threejs_.autoClear = true
             this.threejs_.render(this.scene_, this.camera_);
-            this.raf_();
+            this.threejs_.autoClear = false
+            this.threejs_.render(this.uiScene_, this.uiCamera_);
             this.previousRAF_ = t;
+            this.raf_();
         });
     }
 
