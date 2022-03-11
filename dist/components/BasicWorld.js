@@ -10,6 +10,7 @@ export default class BasicWorld {
 
         this.initalizeRenderer_()
         this.initializeLights_()
+        this.initializeScene_()
 
 
 
@@ -17,24 +18,6 @@ export default class BasicWorld {
             this.camera_, this.threejs_.domElement);
         controls.target.set(0, 20, 0);
         controls.update();
-
-        const loader = new THREE.CubeTextureLoader();
-        const texture = loader.load([
-            '../assets/skybox/posx.jpg',
-            '../assets/skybox/negx.jpg',
-            '../assets/skybox/posy.jpg',
-            '../assets/skybox/negy.jpg',
-            '../assets/skybox/posz.jpg',
-            '../assets/skybox/negz.jpg',
-        ]);
-        this.scene_.background = texture;
-
-        const ground = new THREE.Mesh(
-            new THREE.BoxGeometry(100, 1, 100),
-            new THREE.MeshStandardMaterial({color: 0x404040}));
-        ground.castShadow = false;
-        ground.receiveShadow = true;
-        this.scene_.add(ground);
 
         this.countdown_ = 1.0;
         this.count_ = 0;
@@ -98,6 +81,87 @@ export default class BasicWorld {
         light.groundColor.setHSL(0.095, 1, 0.75)
         light.position.set(0, 4, 0)
         this.scene_.add(light)
+    }
+
+    initializeScene_() {
+        const loader = new THREE.CubeTextureLoader();
+        const texture = loader.load([
+            '../assets/skybox/posx.jpg',
+            '../assets/skybox/negx.jpg',
+            '../assets/skybox/posy.jpg',
+            '../assets/skybox/negy.jpg',
+            '../assets/skybox/posz.jpg',
+            '../assets/skybox/negz.jpg',
+        ])
+
+        texture.encoding = THREE.sRGBEncoding
+        this.scene_.background = texture
+
+        const mapLoader = new THREE.TextureLoader()
+        const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy()
+        const checkerboard = mapLoader.load('../assets/checkerboard.png')
+        checkerboard.anisotropy = maxAnisotropy
+        checkerboard.wrapS = THREE.RepeatWrapping
+        checkerboard.wrapT = THREE.RepeatWrapping
+        checkerboard.repeat.set(32, 32)
+        checkerboard.encoding = THREE.sRGBEncoding
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(100, 100, 10, 10),
+            new THREE.MeshStandardMaterial({map: checkerboard})
+        )
+        plane.castShadow = false
+        plane.receiveShadow = true
+        plane.rotation.x = -Math.PI / 2
+        this.scene_.add(plane)
+
+        const box = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 4, 4),
+            this.loadMaterial_('vintage-tile1_', 0.2))
+        box.position.set(10, 2, 0)
+        box.castShadow = true
+        box.receiveShadow = true
+        this.scene_.add(box)
+
+    }
+
+    loadMaterial_(name, tiling) {
+        const mapLoader = new THREE.TextureLoader()
+        const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy()
+
+        const metalMap = mapLoader.load('../assets/freepbr/' + name + 'metallic.png')
+        metalMap.anisotropy = maxAnisotropy
+        metalMap.wrapS = THREE.RepeatWrapping
+        metalMap.wrapT = THREE.RepeatWrapping
+        metalMap.repeat.set(tiling, tiling)
+
+        const albedo = mapLoader.load('../assets/freepbr/' + name + 'albedo.png')
+        albedo.anisotropy = maxAnisotropy
+        albedo.wrapS = THREE.RepeatWrapping
+        albedo.wrapT = THREE.RepeatWrapping
+        albedo.repeat.set(tiling, tiling)
+        albedo.encoding = THREE.sRGBEncoding
+
+        const normalMap = mapLoader.load('../assets/freepbr/' + name + 'normal.png')
+        normalMap.anisotropy = maxAnisotropy
+        normalMap.wrapS = THREE.RepeatWrapping
+        normalMap.wrapT = THREE.RepeatWrapping
+        normalMap.repeat.set(tiling, tiling)
+
+        const roughnessMap = mapLoader.load('../assets/freepbr/' + name + 'roughness.png')
+        roughnessMap.anisotropy = maxAnisotropy
+        roughnessMap.wrapS = THREE.RepeatWrapping
+        roughnessMap.wrapT = THREE.RepeatWrapping
+        roughnessMap.repeat.set(tiling, tiling)
+
+        const material = new THREE.MeshStandardMaterial({
+            metalnessMap: metalMap,
+            map: albedo,
+            normalMap: normalMap,
+            roughnessMap: roughnessMap
+        })
+
+        return material
     }
 
     onWindowResize_() {
