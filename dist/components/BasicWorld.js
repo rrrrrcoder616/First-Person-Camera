@@ -94,12 +94,12 @@ export default class BasicWorld {
     initializeScene_() {
         const loader = new THREE.CubeTextureLoader();
         const texture = loader.load([
-            '../assets/skybox/posx.jpg',
-            '../assets/skybox/negx.jpg',
-            '../assets/skybox/posy.jpg',
-            '../assets/skybox/negy.jpg',
-            '../assets/skybox/posz.jpg',
-            '../assets/skybox/negz.jpg',
+            './assets/skybox/posx.jpg',
+            './assets/skybox/negx.jpg',
+            './assets/skybox/posy.jpg',
+            './assets/skybox/negy.jpg',
+            './assets/skybox/posz.jpg',
+            './assets/skybox/negz.jpg',
         ])
 
         texture.encoding = THREE.sRGBEncoding
@@ -107,7 +107,7 @@ export default class BasicWorld {
 
         const mapLoader = new THREE.TextureLoader()
         const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy()
-        const checkerboard = mapLoader.load('../assets/checkerboard.png')
+        const checkerboard = mapLoader.load('./assets/checkerboard.png')
         checkerboard.anisotropy = maxAnisotropy
         checkerboard.wrapS = THREE.RepeatWrapping
         checkerboard.wrapT = THREE.RepeatWrapping
@@ -200,26 +200,26 @@ export default class BasicWorld {
         const mapLoader = new THREE.TextureLoader()
         const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy()
 
-        const metalMap = mapLoader.load('../assets/freepbr/' + name + 'metallic.png')
+        const metalMap = mapLoader.load('./assets/freepbr/' + name + 'metallic.png')
         metalMap.anisotropy = maxAnisotropy
         metalMap.wrapS = THREE.RepeatWrapping
         metalMap.wrapT = THREE.RepeatWrapping
         metalMap.repeat.set(tiling, tiling)
 
-        const albedo = mapLoader.load('../assets/freepbr/' + name + 'albedo.png')
+        const albedo = mapLoader.load('./assets/freepbr/' + name + 'albedo.png')
         albedo.anisotropy = maxAnisotropy
         albedo.wrapS = THREE.RepeatWrapping
         albedo.wrapT = THREE.RepeatWrapping
         albedo.repeat.set(tiling, tiling)
         albedo.encoding = THREE.sRGBEncoding
 
-        const normalMap = mapLoader.load('../assets/freepbr/' + name + 'normal.png')
+        const normalMap = mapLoader.load('./assets/freepbr/' + name + 'normal.png')
         normalMap.anisotropy = maxAnisotropy
         normalMap.wrapS = THREE.RepeatWrapping
         normalMap.wrapT = THREE.RepeatWrapping
         normalMap.repeat.set(tiling, tiling)
 
-        const roughnessMap = mapLoader.load('../assets/freepbr/' + name + 'roughness.png')
+        const roughnessMap = mapLoader.load('./assets/freepbr/' + name + 'roughness.png')
         roughnessMap.anisotropy = maxAnisotropy
         roughnessMap.wrapS = THREE.RepeatWrapping
         roughnessMap.wrapT = THREE.RepeatWrapping
