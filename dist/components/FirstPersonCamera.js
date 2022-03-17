@@ -32,6 +32,7 @@ export class FirstPersonCamera {
         this.updateRotation_(timeElapsedS)
         this.updateCamera_(timeElapsedS)
         this.updateTranslation_(timeElapsedS)
+        this.updateHeadBob_(timeElapsedS)
 
         this.input_.update(timeElapsedS)
     }
@@ -58,14 +59,14 @@ export class FirstPersonCamera {
     updateCamera_(_) {
         this.camera_.quaternion.copy(this.rotation_)
         this.camera_.position.copy(this.translation_)
-        this.camera_.position.y += Math.sin(this.headBobTimer_ * 10) * 1.5
+        this.camera_.position.y += Math.sin(this.headBobTimer_ * 10) * 0.2
 
         const forward = new THREE.Vector3(0, 0, -1)
         forward.applyQuaternion(this.rotation_)
 
         const dir = forward.clone()
 
-        forward.multiplyScalar(1)
+        forward.multiplyScalar(100)
         forward.add(this.translation_)
 
         let closest = forward;
@@ -102,6 +103,19 @@ export class FirstPersonCamera {
 
         if (forwardVelocity != 0 || strafeVelocity != 0) {
             this.headBobActive_ = true
+        }
+    }
+
+    updateHeadBob_(timeElapsedS) {
+        if (this.headBobActive_) {
+            const wavelength = Math.PI
+            const nextStep = 1 + Math.floor(((this.headBobTimer_ + 0.000001) * 10) / wavelength)
+            const nextStepTime = nextStep * wavelength / 10
+            this.headBobTimer_ = Math.min(this.headBobTimer_ + timeElapsedS, nextStepTime)
+
+            if (this.headBobTimer_ === nextStepTime) {
+                this.headBobActive_ = false
+            }
         }
     }
 
