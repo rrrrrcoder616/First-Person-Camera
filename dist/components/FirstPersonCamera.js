@@ -101,7 +101,7 @@ export class FirstPersonCamera {
         this.translation_.add(forward)
         this.translation_.add(left)
 
-        if (forwardVelocity != 0 || strafeVelocity != 0) {
+        if (forwardVelocity !== 0 || strafeVelocity !== 0) {
             this.headBobActive_ = true
         }
     }
