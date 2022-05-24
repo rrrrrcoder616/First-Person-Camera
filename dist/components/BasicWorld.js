@@ -24,6 +24,8 @@ export default class BasicWorld {
 
         // this.countdown_ = 1.0;
         // this.count_ = 0;
+
+
         this.previousRAF_ = null;
         this.raf_();
         this.onWindowResize_()

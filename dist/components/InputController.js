@@ -4,7 +4,6 @@ export class InputController {
     constructor(target) {
         this.target_ = target || document
         this.initialize_()
-        console.log("ddd2")
     }
 
     initialize_() {
