@@ -178,26 +178,6 @@ export default class BasicWorld {
             this.objects_.push(b)
         }
 
-        // CROSSHAIR
-        const crosshair = mapLoader.load('./assets/crosshair.png')
-        crosshair.anisotropy = maxAnisotropy
-        
-        this.sprite_ = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-                map: crosshair,
-                color: 0xffffff,
-                fog: false,
-                depthTest: false,
-                depthWrite: false
-            })
-        )
-        this.sprite_.scale.set(0.16, 0.15 * this.camera_.aspect, 1)
-        this.sprite_.position.set(0, 0, -10)
-        
-        this.uiScene_.add(this.sprite_)
-
-    }
-
     loadMaterial_(name, tiling) {
         const mapLoader = new THREE.TextureLoader()
         const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy()
